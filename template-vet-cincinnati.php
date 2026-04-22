@@ -5,51 +5,119 @@
 
 get_header();
 
-$keyword = 'vet near Cincinnati';
-$h1      = get_field('loc_hero_heading') ?: '7 Reasons Cincinnati Pet Owners Choose a Vet Near Cincinnati at VMC';
-$intro   = get_field('loc_hero_body') ?: 'Veterinary Medical Center in Fort Thomas gives Cincinnati families a nearby veterinary option with easier access, straightforward parking, and locally owned care.';
-$panel_h = get_field('loc_panel_heading') ?: 'Cincinnati-close care without downtown friction';
-$panel_b = get_field('loc_panel_body') ?: 'Cross the river, park easily, and work with a team focused on long-term pet health.';
-$image   = get_field('loc_image') ?: get_template_directory_uri() . '/assets/images/about-fort-thomas.jpg';
-$img_alt = get_field('loc_image_alt') ?: 'vet near Cincinnati at Veterinary Medical Center Fort Thomas location';
-$seo     = get_field('loc_seo_body');
+$keyword        = 'vet near Cincinnati';
+$eyebrow        = get_field('loc_hero_eyebrow') ?: 'Vet Near Cincinnati';
+$h1             = get_field('loc_hero_heading') ?: 'Vet near Cincinnati with easy access and full-service care.';
+$hero_body      = get_field('loc_hero_body') ?: 'Veterinary Medical Center Fort Thomas is a practical option for Cincinnati families who want easier parking, clear communication, and local continuity for dogs and cats.';
+$primary_label  = get_field('loc_primary_button') ?: 'Request Appointment';
+$secondary_lbl  = get_field('loc_secondary_button') ?: 'Get Directions';
+$panel_heading  = get_field('loc_panel_heading') ?: 'Cincinnati-area families choose VMC for convenience and continuity';
+$panel_body     = get_field('loc_panel_body') ?: 'Use this page to move quickly from research to booking, registration, and pharmacy support.';
+$intro_heading  = get_field('loc_intro_heading') ?: 'A Cincinnati-close veterinary option without downtown stress';
+$intro_body     = get_field('loc_intro_body') ?: 'For many households, crossing the river to Fort Thomas is easier than navigating downtown parking for routine and follow-up veterinary visits.';
+$quick_body     = get_field('loc_quick_body') ?: 'We support wellness care, diagnostics, dental planning, surgery consultations, and same-week sick visit triage when available.';
+$resource_h     = get_field('loc_resource_heading') ?: 'Resources for Cincinnati pet owners';
+$resource_b     = get_field('loc_resource_body') ?: 'Use these links to book appointments, complete first-visit paperwork, and coordinate ongoing care online.';
+
+$image          = get_field('loc_image') ?: get_template_directory_uri() . '/assets/images/about-fort-thomas.jpg';
+$image_alt      = get_field('loc_image_alt') ?: 'vet near Cincinnati at Veterinary Medical Center Fort Thomas';
+$image_caption  = get_field('loc_image_caption') ?: 'Veterinary Medical Center Fort Thomas, a Cincinnati-close location right off I-471.';
+$team_image     = get_template_directory_uri() . '/assets/images/VMC Social Media.jpg';
+
+$address        = vmc_get('vmc_ft_address', '2000 Memorial Parkway, Fort Thomas, KY 41075');
+$phone          = vmc_get('vmc_ft_phone', '(859) 442-4420');
+$weekday_hours  = vmc_get('vmc_ft_hours_weekday', '8:00 AM – 6:00 PM');
+$sat_hours      = vmc_get('vmc_ft_hours_saturday', 'Rotating — call ahead');
+$phone_href     = preg_replace('/[^0-9+]/', '', $phone);
+$map_embed      = 'https://www.google.com/maps?q=' . rawurlencode($address) . '&output=embed';
+$map_link       = 'https://maps.google.com/?q=' . rawurlencode($address);
+$seo_body       = get_field('loc_seo_body');
 ?>
-<section class="np-sec np-sec--cream">
-  <div class="services-shell" style="max-width:1120px;margin:0 auto;padding:72px 24px;">
-    <div class="sec-eye"><span class="sec-lbl">Cincinnati Area</span><span class="sec-rule"></span></div>
-    <h1 class="sec-h2"><?php echo esc_html($h1); ?></h1>
-    <p style="max-width:78ch;color:var(--mid);line-height:1.9"><?php echo esc_html($intro); ?></p>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;margin:20px 0 30px;">
-      <button class="btn-red" onclick="openAptModal('cincinnati-page')">Book Appointment</button>
-      <a class="btn-ghost" href="<?php echo esc_url(home_url('/contact/')); ?>">Contact Us</a>
-    </div>
 
-    <div class="np-form-grid" style="margin-bottom:24px;">
-      <article class="np-card" style="padding:24px;">
-        <h2 style="margin-top:0;"><?php echo esc_html($panel_h); ?></h2>
-        <p><?php echo esc_html($panel_b); ?></p>
-        <ul>
-          <li><a href="<?php echo esc_url(vmc_patient_portal_page_url()); ?>">Patient portal and online booking</a></li>
-          <li><a href="<?php echo esc_url(home_url('/services/')); ?>">Services for Cincinnati-area pets</a></li>
-          <li><a href="<?php echo esc_url(home_url('/new-patient-registration-form/')); ?>">New patient registration</a></li>
+<div class="lp-page">
+  <section class="lp-hero">
+    <div class="lp-hero-copy">
+      <div class="eyebrow"><span class="eyebrow-dash"></span><?php echo esc_html($eyebrow); ?></div>
+      <h1 class="hero-h1"><?php echo esc_html($h1); ?></h1>
+      <p class="hero-body"><?php echo esc_html($hero_body); ?></p>
+      <div class="lp-actions">
+        <button class="btn-red" onclick="openAptModal('cincinnati-hero')"><?php echo esc_html($primary_label); ?></button>
+        <a class="btn-ghost" href="<?php echo esc_url(home_url('/contact/')); ?>">Contact Us</a>
+      </div>
+    </div>
+    <aside class="lp-hero-side">
+      <div class="lp-card">
+        <h2><?php echo esc_html($panel_heading); ?></h2>
+        <p><?php echo esc_html($panel_body); ?></p>
+        <ul class="lp-list">
+          <li><a href="tel:<?php echo esc_attr($phone_href); ?>"><?php echo esc_html($phone); ?></a></li>
+          <li><a href="<?php echo esc_url(vmc_patient_portal_page_url()); ?>">Patient Portal & Online Booking</a></li>
+          <li><a href="<?php echo esc_url(home_url('/new-patient-registration-form/')); ?>">New Patient Registration Form</a></li>
         </ul>
-      </article>
-      <article class="np-card" style="padding:0;overflow:hidden;">
-        <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($img_alt); ?>" style="width:100%;height:100%;min-height:280px;object-fit:cover;display:block;">
+      </div>
+    </aside>
+  </section>
+
+  <section class="lp-section lp-section--white">
+    <div class="home-shell">
+      <div class="sec-eye"><span class="sec-lbl">Why Cincinnati Families Choose VMC</span><span class="sec-rule"></span></div>
+      <h2 class="sec-h2"><?php echo esc_html($intro_heading); ?></h2>
+      <p class="lp-copy"><?php echo esc_html($intro_body); ?></p>
+      <div class="lp-grid-2">
+        <article class="lp-image-card"><img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($image_alt); ?>" loading="eager"><p><?php echo esc_html($image_caption); ?></p></article>
+        <article class="lp-card">
+          <h3><?php echo esc_html($keyword); ?> with practical local access</h3>
+          <p><?php echo esc_html($quick_body); ?></p>
+          <div class="lp-chips">
+            <span class="lp-chip">Downtown Cincinnati</span><span class="lp-chip">Over-the-Rhine</span><span class="lp-chip">Mount Adams</span><span class="lp-chip">Newport</span><span class="lp-chip">Bellevue</span>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="lp-section lp-section--warm" id="directions">
+    <div class="home-shell">
+      <div class="sec-eye"><span class="sec-lbl">Office & Map</span><span class="sec-rule"></span></div>
+      <h2 class="sec-h2">Visit our Fort Thomas office from Cincinnati</h2>
+      <div class="lp-grid-2">
+        <article class="lp-map-card">
+          <iframe class="lp-map" src="<?php echo esc_url($map_embed); ?>" loading="lazy" title="Map to Veterinary Medical Center Fort Thomas"></iframe>
+          <div class="lp-map-body">
+            <h3><?php echo esc_html($address); ?></h3>
+            <p>Mon–Fri: <?php echo esc_html($weekday_hours); ?> · Saturday: <?php echo esc_html($sat_hours); ?></p>
+            <div class="lp-actions"><a class="btn-outline" target="_blank" rel="noopener" href="<?php echo esc_url($map_link); ?>"><?php echo esc_html($secondary_lbl); ?></a></div>
+          </div>
+        </article>
+        <article class="lp-card">
+          <h3><?php echo esc_html($resource_h); ?></h3>
+          <p><?php echo esc_html($resource_b); ?></p>
+          <ul class="lp-list">
+            <li><a href="<?php echo esc_url(home_url('/services/')); ?>">Explore Services</a></li>
+            <li><a href="<?php echo esc_url(home_url('/online-vet-pharmacy-northern-kentucky-cincinnati/')); ?>">Online Vet Pharmacy</a></li>
+            <li><a href="https://www.avma.org/resources-tools/pet-owners" target="_blank" rel="noopener">AVMA Pet Owner Resources</a></li>
+          </ul>
+          <img src="<?php echo esc_url($team_image); ?>" alt="Vet near Cincinnati team at Veterinary Medical Center" style="width:100%;border-radius:8px;margin-top:16px;">
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="lp-section lp-section--white">
+    <div class="home-shell">
+      <article class="lp-card lp-card--seo">
+        <h2>How to choose a <?php echo esc_html($keyword); ?> that actually works for your schedule</h2>
+        <p>Cincinnati pet owners usually need more than proximity alone. They need a clinic where drop-off, parking, communication, and follow-up are all practical on a weekday. Veterinary Medical Center in Fort Thomas is built around that reality. For many households, the short drive across the river means less time navigating city parking and more time focused on your pet’s care plan.</p>
+        <p>Our team supports preventive care, diagnostics, dental planning, surgery coordination, and sick-visit guidance with an emphasis on clear next steps. If your pet has anxiety, mobility limitations, or chronic conditions, that consistency helps visits feel manageable from check-in through follow-up.</p>
+        <h3>What to do next</h3>
+        <p>Start by requesting an appointment through our patient portal and online booking page, complete your registration form, and save our online pharmacy page for refill support. These steps make future care easier for your whole household.</p>
+        <?php if ($seo_body) : ?><div class="lp-wysiwyg"><?php echo wp_kses_post($seo_body); ?></div><?php endif; ?>
+        <?php if (have_posts()) : while (have_posts()) : the_post(); ?>
+          <?php if (trim(wp_strip_all_tags(get_the_content()))) : ?><div class="lp-wysiwyg"><?php the_content(); ?></div><?php endif; ?>
+        <?php endwhile; endif; ?>
       </article>
     </div>
+  </section>
+</div>
 
-    <article class="np-card" style="padding:28px;line-height:1.9;">
-      <h2><?php echo esc_html($keyword); ?> with easier access from downtown and nearby neighborhoods</h2>
-      <p>Cincinnati clients often need a clinic that is close enough for routine follow-up but easier than downtown logistics. Our Fort Thomas location is just across the river and convenient for many households in Downtown Cincinnati, Mount Adams, and Over-the-Rhine. This practical access helps owners stay consistent with annual exams, diagnostics, dental follow-up, and medication rechecks.</p>
-      <h3>Local intent, natural language, and high-readability structure</h3>
-      <p>This page is organized for readability with short sections, descriptive headings, and clear action links. We use the target keyword naturally at the beginning and throughout the content so the copy remains human-first while still supporting strong on-page SEO signals for “vet near Cincinnati.”</p>
-      <h3>Helpful references for Cincinnati pet families</h3>
-      <p>Use our <a href="<?php echo esc_url(home_url('/online-vet-pharmacy-northern-kentucky-cincinnati/')); ?>">online vet pharmacy page</a> for eligible refill ordering and the <a href="<?php echo esc_url(home_url('/patient-portal-online-booking/')); ?>">patient portal page</a> for online appointment requests. For broader pet-care education, review <a href="https://www.avma.org/resources-tools/pet-owners" target="_blank" rel="noopener">AVMA resources for pet owners</a>.</p>
-      <?php if ($seo) : ?>
-        <?php echo wp_kses_post($seo); ?>
-      <?php endif; ?>
-    </article>
-  </div>
-</section>
 <?php get_footer(); ?>
