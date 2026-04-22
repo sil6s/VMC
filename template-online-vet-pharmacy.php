@@ -5,55 +5,160 @@
 
 get_header();
 
-$h1         = get_field( 'pharmacy_h1' ) ?: 'Northern Kentucky & Cincinnati Online Vet Pharmacy';
-$intro      = get_field( 'pharmacy_intro' ) ?: 'Use our Northern Kentucky and Cincinnati online vet pharmacy page to request refills and browse trusted products.';
-$link_label = get_field( 'pharmacy_external_link_label' ) ?: 'Open Online Vet Pharmacy';
-$link_url   = get_field( 'pharmacy_external_link_url' ) ?: vmc_get( 'vmc_pharmacy_url', 'https://nky-vet.ourvet.com/' );
-$body       = get_field( 'pharmacy_body' );
-$hero_image = get_field( 'pharmacy_hero_image' ) ?: get_template_directory_uri() . '/assets/images/about-independence.jpg';
-$hero_alt   = get_field( 'pharmacy_hero_image_alt' ) ?: 'Northern Kentucky and Cincinnati online vet pharmacy resource for pet owners';
+$h1           = get_field( 'pharmacy_h1' ) ?: 'Northern Kentucky & Cincinnati Online Vet Pharmacy';
+$intro        = get_field( 'pharmacy_intro' ) ?: 'Use our Northern Kentucky and Cincinnati online vet pharmacy page to request refills and browse trusted products.';
+$link_label   = get_field( 'pharmacy_external_link_label' ) ?: 'Open Online Vet Pharmacy';
+$link_url     = get_field( 'pharmacy_external_link_url' ) ?: vmc_get( 'vmc_pharmacy_url', 'https://nky-vet.ourvet.com/' );
+$body         = get_field( 'pharmacy_body' );
+$ft_phone     = vmc_get( 'vmc_ft_phone', '(859) 442-4420' );
+$ind_phone    = vmc_get( 'vmc_ind_phone', '(859) 356-2242' );
+$ft_address   = vmc_get( 'vmc_ft_address', '2000 Memorial Parkway, Fort Thomas, KY 41075' );
+$ind_address  = vmc_get( 'vmc_ind_address', '4147 Madison Pike, Independence, KY 41051' );
+$ft_map_query = rawurlencode( $ft_address );
+$ind_map_query = rawurlencode( $ind_address );
 ?>
-<section class="np-sec np-sec--white">
-  <div class="services-shell" style="max-width:1060px;margin:0 auto;padding:76px 24px;">
-    <div class="sec-eye"><span class="sec-lbl">Online Pharmacy</span><span class="sec-rule"></span></div>
-    <h1 class="sec-h2" style="margin-top:14px;"><?php echo esc_html( $h1 ); ?></h1>
-    <p style="max-width:76ch;line-height:1.9;color:var(--mid);"><?php echo esc_html( $intro ); ?></p>
-    <img src="<?php echo esc_url( $hero_image ); ?>" alt="<?php echo esc_attr( $hero_alt ); ?>" style="width:100%;max-height:440px;object-fit:cover;border-radius:8px;margin:20px 0 0;" loading="eager">
-    <div style="display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 34px;">
-      <a class="btn-red" href="<?php echo esc_url( $link_url ); ?>" target="_blank" rel="noopener"><?php echo esc_html( $link_label ); ?></a>
-      <a class="btn-ghost" href="<?php echo esc_url( vmc_patient_portal_page_url() ); ?>">Patient Portal & Booking</a>
+
+<style>
+.pharm-page{background:var(--white)}
+.pharm-hero{display:grid;grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr);min-height:640px;background:var(--cream)}
+.pharm-copy{padding:108px 68px 70px}
+.pharm-side{background:var(--warm);padding:106px 52px 68px 28px;display:flex;align-items:center}
+.pharm-card,.pharm-panel,.pharm-map-card{background:var(--white);border:1px solid rgba(0,0,0,.07);border-radius:8px;box-shadow:0 20px 56px rgba(0,0,0,.06)}
+.pharm-toc{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.pharm-toc a{display:inline-flex;align-items:center;min-height:36px;padding:8px 12px;border-radius:8px;background:var(--white);border:1px solid rgba(0,0,0,.08);font-size:13px;color:var(--mid);text-decoration:none}
+.pharm-panel{padding:28px}
+.pharm-panel h2,.pharm-card h2,.pharm-map-card h3{font-family:'Playfair Display',serif;color:var(--dark)}
+.pharm-panel p,.pharm-card p,.pharm-card li,.pharm-map-card p{font-size:14.5px;line-height:1.84;color:var(--mid)}
+.pharm-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+.pharm-list{margin:18px 0 0;padding:0;list-style:none}
+.pharm-list li{padding:11px 0;border-bottom:1px solid rgba(0,0,0,.08)}
+.pharm-list li:last-child{border-bottom:none}
+.pharm-sec{padding:86px var(--pad)}
+.pharm-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;margin-top:28px}
+.pharm-grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:24px}
+.pharm-card{padding:30px}
+.pharm-map{display:block;width:100%;height:280px;border:0;background:var(--cream)}
+.pharm-map-body{padding:22px}
+.pharm-map-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.pharm-map-meta div{background:var(--cream);border:1px solid rgba(0,0,0,.05);border-radius:8px;padding:12px}
+.pharm-map-meta strong{display:block;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.pharm-map-meta a,.pharm-map-meta span{font-size:13px;color:var(--mid)}
+.pharm-copy-body h2,.pharm-copy-body h3{font-family:'Playfair Display',serif;color:var(--dark)}
+.pharm-copy-body a{color:var(--red);font-weight:700}
+.pharm-step{background:var(--white);border:1px solid rgba(0,0,0,.08);border-radius:8px;padding:22px}
+.pharm-step .num{display:inline-flex;width:30px;height:30px;border-radius:999px;background:var(--red);color:#fff;align-items:center;justify-content:center;font-weight:700;margin-bottom:10px}
+.pharm-faq details{background:var(--white);border:1px solid rgba(0,0,0,.08);border-radius:8px;padding:0 18px;margin-top:10px}
+.pharm-faq summary{cursor:pointer;padding:18px 0;font-weight:700;color:var(--dark)}
+.pharm-faq p{padding:0 0 18px;margin:0}
+@media(max-width:1100px){
+  .pharm-hero,.pharm-grid{grid-template-columns:1fr}
+  .pharm-copy{padding:82px 24px 34px}
+  .pharm-side{padding:0 24px 56px}
+}
+@media(max-width:700px){
+  .pharm-sec{padding:56px 24px}
+  .pharm-map-meta{grid-template-columns:1fr}
+  .pharm-grid-3{grid-template-columns:1fr}
+}
+</style>
+
+<div class="pharm-page">
+  <section class="pharm-hero">
+    <div class="pharm-copy">
+      <div class="eyebrow"><span class="eyebrow-dash"></span>Online Vet Pharmacy</div>
+      <h1 class="hero-h1" style="max-width:15ch"><?php echo esc_html( $h1 ); ?></h1>
+      <p class="hero-body" style="max-width:66ch"><?php echo esc_html( $intro ); ?></p>
+      <div class="pharm-actions">
+        <a class="btn-red" href="<?php echo esc_url( $link_url ); ?>" target="_blank" rel="noopener"><?php echo esc_html( $link_label ); ?></a>
+        <a class="btn-ghost" href="<?php echo esc_url( vmc_patient_portal_page_url() ); ?>">Patient Portal &amp; Booking</a>
+      </div>
+      <div class="pharm-toc">
+        <a href="#pharm-steps">How it works</a>
+        <a href="#pharm-support">Location support</a>
+        <a href="#pharm-seo">Pharmacy guide</a>
+      </div>
     </div>
-    <div class="np-card" style="padding:24px;margin-bottom:24px;">
-      <h2 style="margin-top:0;">On this pharmacy page</h2>
-      <ul>
-        <li><a href="#pharm-how">How to use our online vet pharmacy</a></li>
-        <li><a href="#pharm-safety">Medication safety and refill timing tips</a></li>
-        <li><a href="#pharm-links">Helpful local and national resources</a></li>
-      </ul>
+    <aside class="pharm-side">
+      <div class="pharm-panel rv">
+        <h2>Trusted refill access with local veterinary support.</h2>
+        <p>Open the online pharmacy, request eligible products, and call either VMC location if you need medication timing or refill support.</p>
+        <ul class="pharm-list">
+          <li><a href="<?php echo esc_url( $link_url ); ?>" target="_blank" rel="noopener">Open secure online pharmacy</a></li>
+          <li><a href="<?php echo esc_url( vmc_patient_portal_page_url() ); ?>">Patient portal and online booking</a></li>
+          <li><a href="<?php echo esc_url( home_url( '/services/' ) ); ?>">Review VMC services</a></li>
+          <li><a href="<?php echo esc_url( home_url( '/contact/' ) ); ?>">Contact VMC with refill questions</a></li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <section class="pharm-sec" style="background:var(--white)" id="pharm-steps">
+    <div class="rv">
+      <div class="sec-eye"><span class="sec-lbl">How It Works</span><span class="sec-rule"></span></div>
+      <h2 class="sec-h2">Confident online pharmacy ordering in three steps.</h2>
+      <div class="pharm-grid-3">
+        <article class="pharm-step"><span class="num">1</span><h3>Open secure pharmacy</h3><p>Use the pharmacy button to reach the official storefront tied to Veterinary Medical Center.</p></article>
+        <article class="pharm-step"><span class="num">2</span><h3>Request eligible products</h3><p>Choose refills, prevention, and approved products based on your pet’s ongoing care plan.</p></article>
+        <article class="pharm-step"><span class="num">3</span><h3>Confirm with local team</h3><p>Call either location if you have timing, dosage, or shipping questions.</p></article>
+      </div>
     </div>
-    <div id="pharm-how" class="np-card" style="padding:28px;margin-bottom:24px;">
-      <h2>Northern Kentucky and Cincinnati online vet pharmacy access made simple</h2>
-      <p>This page exists to give pet owners one reliable destination for online pharmacy ordering. When families search for a “Northern Kentucky / Cincinnati online vet pharmacy,” they are often trying to refill medication quickly and avoid outdated links. We built this page to solve that issue with a direct button to the official pharmacy platform.</p>
-      <p>Use the pharmacy button for eligible refills, prevention products, and home-delivery options. If your pet needs an exam or treatment update before a refill can be approved, you can request care through our <a href="<?php echo esc_url( vmc_patient_portal_page_url() ); ?>">patient portal and online booking page</a> or contact us directly for guidance.</p>
+  </section>
+
+  <section class="pharm-sec" style="background:var(--warm)" id="pharm-support">
+    <div class="rv">
+      <div class="sec-eye"><span class="sec-lbl">Local Support</span><span class="sec-rule"></span></div>
+      <h2 class="sec-h2">Talk to our local teams while managing pharmacy orders.</h2>
+      <div class="pharm-grid">
+        <article class="pharm-map-card">
+          <iframe class="pharm-map" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=<?php echo esc_attr( $ft_map_query ); ?>&z=15&output=embed" title="Map to Veterinary Medical Center Fort Thomas"></iframe>
+          <div class="pharm-map-body">
+            <h3>Fort Thomas</h3>
+            <p><?php echo esc_html( $ft_address ); ?></p>
+            <div class="pharm-map-meta">
+              <div><strong>Call</strong><a href="tel:<?php echo esc_attr( preg_replace( '/[^0-9+]/', '', $ft_phone ) ); ?>"><?php echo esc_html( $ft_phone ); ?></a></div>
+              <div><strong>Directions</strong><a href="https://maps.google.com/?q=<?php echo esc_attr( $ft_map_query ); ?>" target="_blank" rel="noopener">Get Directions</a></div>
+            </div>
+          </div>
+        </article>
+        <article class="pharm-map-card">
+          <iframe class="pharm-map" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=<?php echo esc_attr( $ind_map_query ); ?>&z=15&output=embed" title="Map to Veterinary Medical Center Independence"></iframe>
+          <div class="pharm-map-body">
+            <h3>Independence</h3>
+            <p><?php echo esc_html( $ind_address ); ?></p>
+            <div class="pharm-map-meta">
+              <div><strong>Call</strong><a href="tel:<?php echo esc_attr( preg_replace( '/[^0-9+]/', '', $ind_phone ) ); ?>"><?php echo esc_html( $ind_phone ); ?></a></div>
+              <div><strong>Directions</strong><a href="https://maps.google.com/?q=<?php echo esc_attr( $ind_map_query ); ?>" target="_blank" rel="noopener">Get Directions</a></div>
+            </div>
+          </div>
+        </article>
+      </div>
     </div>
-    <div id="pharm-safety" class="np-card" style="padding:28px;margin-bottom:24px;">
-      <h2>Medication safety tips for online vet pharmacy orders</h2>
-      <p>Online convenience should always stay connected to veterinary oversight. Before placing an order, verify your pet’s current weight, species, and medication history. If anything has changed since the last refill, please check in with our team so we can confirm the safest option.</p>
-      <p>For parasite prevention and chronic-condition medications, set reminder intervals so orders arrive before doses run out. This helps prevent treatment gaps and keeps long-term plans consistent. For additional medication education, review <a href="https://www.fda.gov/animal-veterinary/animal-health-literacy/fda-and-pet-medications" target="_blank" rel="noopener">FDA pet medication guidance</a>.</p>
+  </section>
+
+  <section class="pharm-sec" style="background:var(--white)" id="pharm-seo">
+    <div class="rv">
+      <div class="pharm-card pharm-copy-body">
+        <div class="sec-eye"><span class="sec-lbl">Pharmacy Guide</span><span class="sec-rule"></span></div>
+        <?php
+        if ( $body ) {
+            echo wp_kses_post( $body );
+        } else {
+            echo '<h2>Secure veterinary pharmacy access</h2><p>Use the button above to open the secure online pharmacy.</p>';
+        }
+        ?>
+        <div class="pharm-faq">
+          <details open>
+            <summary>Is this linked to my veterinary records?</summary>
+            <p>Yes, requests from the connected pharmacy flow through your veterinary team so approvals can align with your pet’s care history.</p>
+          </details>
+          <details>
+            <summary>What if an item is delayed or unavailable?</summary>
+            <p>Contact us directly and we can help review alternatives, timing, or in-clinic options when appropriate.</p>
+          </details>
+        </div>
+      </div>
     </div>
-    <div id="pharm-links" class="np-card" style="padding:28px;">
-      <h2>Helpful links for pet owners in Northern Kentucky and Cincinnati</h2>
-      <p>Need broader care planning? Explore our <a href="<?php echo esc_url( home_url( '/services/' ) ); ?>">veterinary services</a>, connect with our team on the <a href="<?php echo esc_url( home_url( '/contact/' ) ); ?>">contact page</a>, and review preparation tips on the <a href="<?php echo esc_url( home_url( '/new-patients/' ) ); ?>">new patients page</a>. These internal resources help you pair online pharmacy convenience with complete in-clinic follow-through.</p>
-    </div>
-    <div class="np-card" style="padding:28px;">
-      <?php
-      if ( $body ) {
-          echo wp_kses_post( $body );
-      } else {
-          echo '<p>Use the button above to open the secure online pharmacy.</p>';
-      }
-      ?>
-    </div>
-  </div>
-</section>
+  </section>
+</div>
+
 <?php get_footer(); ?>
